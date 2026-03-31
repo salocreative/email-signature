@@ -189,7 +189,7 @@
 
 				<label for="bookingUrl">Book a chat link <span class="opt">(optional)</span></label>
 				<input type="url" id="bookingUrl" placeholder="https://cal.com/yourname/chat">
-				<p class="hint">Your Cal.com (or similar) URL. If blank, only &ldquo;Flexi Design&rdquo; shows in that row.</p>
+				<p class="hint">Your Cal.com (or similar) URL. If blank, that row shows LinkedIn and Flexi Design only.</p>
 
 				<div class="actions">
 					<button type="button" class="btn-primary" id="btnCopy">Copy HTML for Gmail</button>
@@ -296,6 +296,7 @@
 				);
 
 				var footerLinks =
+					'<a href="https://www.linkedin.com/company/salo-creative/" target="_blank" style="color: #6405FF; text-decoration: none;">LinkedIn</a>&nbsp;|&nbsp;' +
 					'<a href="https://salo.uk/services/flexi-design/" target="_blank" style="color: #6405FF; text-decoration: none;">Flexi Design</a>';
 				if (book) {
 					footerLinks += '&nbsp;|&nbsp;<a href="' + escapeHtml(book) + '" target="_blank" style="color: #6405FF; text-decoration: none;">Book a quick chat</a>';
