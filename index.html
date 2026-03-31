@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Salo — Email signature</title>
+	<style>
+		:root {
+			--accent: #6405ff;
+			--accent-hover: #5204d4;
+			--bg: #f6f4f9;
+			--surface: #fff;
+			--text: #1a1a1a;
+			--muted: #5c5c5c;
+			--border: #e4e0ec;
+			--radius: 10px;
+			--font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+		}
+		* { box-sizing: border-box; }
+		body {
+			margin: 0;
+			min-height: 100vh;
+			font-family: var(--font);
+			font-size: 15px;
+			color: var(--text);
+			background: var(--bg);
+			line-height: 1.45;
+		}
+		.wrap {
+			max-width: 960px;
+			margin: 0 auto;
+			padding: 2rem 1.25rem 3rem;
+		}
+		h1 {
+			font-size: 1.35rem;
+			font-weight: 700;
+			margin: 0 0 0.35rem;
+			letter-spacing: -0.02em;
+		}
+		.lead {
+			color: var(--muted);
+			margin: 0 0 1.75rem;
+			font-size: 0.95rem;
+		}
+		.grid {
+			display: grid;
+			gap: 1.5rem;
+		}
+		@media (min-width: 800px) {
+			.grid { grid-template-columns: 1fr 1fr; align-items: start; }
+		}
+		.panel {
+			background: var(--surface);
+			border: 1px solid var(--border);
+			border-radius: var(--radius);
+			padding: 1.25rem 1.35rem;
+		}
+		.panel h2 {
+			font-size: 0.75rem;
+			text-transform: uppercase;
+			letter-spacing: 0.06em;
+			color: var(--muted);
+			margin: 0 0 1rem;
+			font-weight: 600;
+		}
+		label {
+			display: block;
+			font-size: 0.8rem;
+			font-weight: 600;
+			margin-bottom: 0.35rem;
+			color: var(--text);
+		}
+		label .opt {
+			font-weight: 400;
+			color: var(--muted);
+		}
+		input[type="text"],
+		input[type="email"],
+		input[type="url"] {
+			width: 100%;
+			padding: 0.55rem 0.65rem;
+			border: 1px solid var(--border);
+			border-radius: 6px;
+			font: inherit;
+			margin-bottom: 1rem;
+		}
+		input:focus {
+			outline: 2px solid var(--accent);
+			outline-offset: 1px;
+			border-color: transparent;
+		}
+		.hint {
+			font-size: 0.8rem;
+			color: var(--muted);
+			margin: -0.65rem 0 1rem;
+		}
+		.actions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.6rem;
+			margin-top: 0.25rem;
+		}
+		button {
+			font: inherit;
+			font-weight: 600;
+			cursor: pointer;
+			border: none;
+			border-radius: 6px;
+			padding: 0.65rem 1.1rem;
+		}
+		.btn-primary {
+			background: var(--accent);
+			color: #fff;
+		}
+		.btn-primary:hover { background: var(--accent-hover); }
+		.btn-primary:disabled {
+			opacity: 0.5;
+			cursor: not-allowed;
+		}
+		.btn-ghost {
+			background: transparent;
+			color: var(--accent);
+			border: 1px solid var(--border);
+		}
+		.btn-ghost:hover { border-color: var(--accent); background: rgba(100, 5, 255, 0.06); }
+		.toast {
+			display: none;
+			margin-top: 0.75rem;
+			padding: 0.5rem 0.75rem;
+			background: #e8f5e9;
+			color: #1b5e20;
+			border-radius: 6px;
+			font-size: 0.875rem;
+		}
+		.toast.show { display: block; }
+		.preview-box {
+			border: 1px dashed var(--border);
+			border-radius: 8px;
+			padding: 1rem;
+			background: #fafafa;
+			min-height: 200px;
+			overflow-x: auto;
+		}
+		.steps {
+			margin: 1.5rem 0 0;
+			padding: 1rem 1.15rem;
+			background: var(--surface);
+			border: 1px solid var(--border);
+			border-radius: var(--radius);
+			font-size: 0.875rem;
+			color: var(--muted);
+		}
+		.steps strong { color: var(--text); }
+		.steps ol { margin: 0.5rem 0 0; padding-left: 1.25rem; }
+		.steps li { margin-bottom: 0.35rem; }
+		.err {
+			color: #c62828;
+			font-size: 0.85rem;
+			margin-top: -0.5rem;
+			margin-bottom: 0.75rem;
+			display: none;
+		}
+		.err.show { display: block; }
+	</style>
+</head>
+<body>
+	<div class="wrap">
+		<h1>Email signature</h1>
+		<p class="lead">Fill in your details, then copy the HTML into Gmail.</p>
+
+		<div class="grid">
+			<div class="panel">
+				<h2>Your details</h2>
+				<label for="fullName">Full name</label>
+				<input type="text" id="fullName" autocomplete="name" placeholder="Jane Smith" required>
+				<span class="err" id="errName">Enter your name.</span>
+
+				<label for="jobTitle">Job title <span class="opt">(optional)</span></label>
+				<input type="text" id="jobTitle" autocomplete="organization-title" placeholder="Designer">
+				<p class="hint">Shown under your name. Leave blank to hide this line.</p>
+
+				<label for="email">Email</label>
+				<input type="email" id="email" autocomplete="email" placeholder="jane@salo.uk" required>
+				<span class="err" id="errEmail">Enter a valid email.</span>
+
+				<label for="phone">Phone <span class="opt">(optional)</span></label>
+				<input type="text" id="phone" autocomplete="tel" placeholder="07700 900000">
+				<p class="hint">Leave blank to hide the mobile row.</p>
+
+				<label for="bookingUrl">Book a chat link <span class="opt">(optional)</span></label>
+				<input type="url" id="bookingUrl" placeholder="https://cal.com/yourname/chat">
+				<p class="hint">Your Cal.com (or similar) URL. If blank, only &ldquo;Flexi Design&rdquo; shows in that row.</p>
+
+				<div class="actions">
+					<button type="button" class="btn-primary" id="btnCopy">Copy HTML for Gmail</button>
+					<button type="button" class="btn-ghost" id="btnRaw">Show raw HTML</button>
+				</div>
+				<div class="toast" id="toast" role="status">Copied. In Gmail, paste into the signature box.</div>
+			</div>
+
+			<div class="panel">
+				<h2>Preview</h2>
+				<div class="preview-box" id="preview" aria-live="polite"></div>
+			</div>
+		</div>
+
+		<div class="panel" id="rawPanel" style="display: none; margin-top: 1.5rem;">
+			<h2>Raw HTML</h2>
+			<p class="hint" style="margin-top: 0;">Select all and copy if the button did not work.</p>
+			<textarea id="rawHtml" readonly rows="14" style="width: 100%; font-family: ui-monospace, monospace; font-size: 12px; border: 1px solid var(--border); border-radius: 6px; padding: 0.65rem;"></textarea>
+		</div>
+
+		<div class="steps">
+			<strong>Add it in Gmail</strong>
+			<ol>
+				<li>Open Gmail &rarr; Settings (gear) &rarr; <strong>See all settings</strong>.</li>
+				<li>Under <strong>General</strong>, find <strong>Signature</strong>.</li>
+				<li>Create or edit a signature, click in the editor, then paste (<kbd>⌘</kbd>+<kbd>V</kbd> / <kbd>Ctrl</kbd>+<kbd>V</kbd>).</li>
+				<li>If formatting looks wrong, use <strong>Copy HTML for Gmail</strong> above, or paste the raw HTML via a browser extension that inserts HTML &mdash; plain paste usually works in the rich text box.</li>
+			</ol>
+		</div>
+	</div>
+
+	<script>
+		(function () {
+			/** Logo: replace with a stable hosted asset URL if the Gmail proxy URL expires. */
+			var LOGO_SRC = "https://ci3.googleusercontent.com/mail-sig/AIorK4zDxG7i4NWFhjHh-qropU2VKmFoyPY-u1b5iCfYwQ3vqm9hsCuOeUZtzIMaaM2BwLHf_FbKu3U";
+			var LOGO_W = 96;
+			var LOGO_H = 28;
+
+			var fullName = document.getElementById("fullName");
+			var jobTitle = document.getElementById("jobTitle");
+			var email = document.getElementById("email");
+			var phone = document.getElementById("phone");
+			var bookingUrl = document.getElementById("bookingUrl");
+			var preview = document.getElementById("preview");
+			var btnCopy = document.getElementById("btnCopy");
+			var btnRaw = document.getElementById("btnRaw");
+			var rawPanel = document.getElementById("rawPanel");
+			var rawHtml = document.getElementById("rawHtml");
+			var toast = document.getElementById("toast");
+			var errName = document.getElementById("errName");
+			var errEmail = document.getElementById("errEmail");
+
+			function escapeHtml(s) {
+				if (!s) return "";
+				return String(s)
+					.replace(/&/g, "&amp;")
+					.replace(/</g, "&lt;")
+					.replace(/>/g, "&gt;")
+					.replace(/"/g, "&quot;");
+			}
+
+			function telHref(display) {
+				var d = String(display).replace(/[^\d+]/g, "");
+				if (!d) return "";
+				return "tel:" + d;
+			}
+
+			function buildSignatureHtml() {
+				var name = fullName.value.trim();
+				var title = jobTitle.value.trim();
+				var em = email.value.trim();
+				var ph = phone.value.trim();
+				var book = bookingUrl.value.trim();
+
+				var rows = [];
+				rows.push("<tr><td><b>" + escapeHtml(name) + "</b></td></tr>");
+				if (title) {
+					rows.push("<tr><td>" + escapeHtml(title) + "</td></tr>");
+				}
+				rows.push(
+					'<tr><td style="padding-top: 20px; padding-bottom: 20px;">' +
+					'<a href="https://salo.uk/" title="Salo Creative" style="color:rgb(17,85,204)" target="_blank">' +
+					'<img width="' + LOGO_W + '" height="' + LOGO_H + '" src="' + LOGO_SRC + '" alt="Salo Creative"></a></td></tr>'
+				);
+
+				var innerContact = [];
+				var tel = ph ? telHref(ph) : "";
+				if (ph && tel) {
+					innerContact.push(
+						"<tr><td><b>Mobile:&nbsp;</b></td><td><a href=\"" + escapeHtml(tel) + "\" style=\"color: #6405FF; text-decoration: none;\">" + escapeHtml(ph) + "</a></td></tr>"
+					);
+				}
+				innerContact.push(
+					"<tr><td><b>Email:&nbsp;</b></td><td><a href=\"mailto:" + escapeHtml(em) + "\" target=\"_blank\" style=\"color: #6405FF; text-decoration: none;\">" + escapeHtml(em) + "</a></td></tr>"
+				);
+				innerContact.push(
+					'<tr><td><b>Website:&nbsp;</b></td><td><a href="https://www.salo.uk/" target="_blank" style="color: #6405FF; text-decoration: none;">www.salo.uk</a></td></tr>'
+				);
+
+				rows.push(
+					"<tr><td><table border=\"0\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 13px; color: rgb(0, 0, 0); padding-bottom: 15px;\">" +
+					innerContact.join("") +
+					"</table></td></tr>"
+				);
+
+				var footerLinks =
+					'<a href="https://salo.uk/services/flexi-design/" target="_blank" style="color: #6405FF; text-decoration: none;">Flexi Design</a>';
+				if (book) {
+					footerLinks += '&nbsp;|&nbsp;<a href="' + escapeHtml(book) + '" target="_blank" style="color: #6405FF; text-decoration: none;">Book a quick chat</a>';
+				}
+				rows.push('<tr><td style="padding-bottom:15px;">' + footerLinks + "</td></tr>");
+
+				rows.push(
+					'<tr><td style="color: rgb(102, 102, 102); font-size: 9px;">' +
+					"This e-mail message may contain confidential or legally privileged information and is intended only for the use of the intended recipient(s). Any unauthorised disclosure, dissemination, distribution, copying or the taking of any action in reliance on the information herein is prohibited. E-mails are not secure and cannot be guaranteed to be error-free as they can be intercepted, amended, or contain viruses. Anyone who communicates with us by e-mail is deemed to have accepted these risks. Salo Creative is not responsible for errors or omissions in this message and denies any responsibility for any damage arising from the use of e-mail. Any opinion and other statement contained in this message and any attachments are solely those of the author and do not necessarily represent those of the company." +
+					"</td></tr>"
+				);
+
+				return (
+					'<table style="font-family: Helvetica, Arial, sans-serif; font-size: 14px; color: rgb(0, 0, 0);">' +
+					"<tbody>" +
+					rows.join("") +
+					"</tbody></table>"
+				);
+			}
+
+			function validate() {
+				var ok = true;
+				errName.classList.remove("show");
+				errEmail.classList.remove("show");
+				if (!fullName.value.trim()) {
+					errName.classList.add("show");
+					ok = false;
+				}
+				var em = email.value.trim();
+				if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) {
+					errEmail.classList.add("show");
+					ok = false;
+				}
+				return ok;
+			}
+
+			function render() {
+				if (!fullName.value.trim() && !email.value.trim()) {
+					preview.innerHTML = "<span style=\"color:#888\">Enter your name and email to preview.</span>";
+					return;
+				}
+				preview.innerHTML = buildSignatureHtml();
+			}
+
+			var toastDefault = "Copied. In Gmail, paste into the signature box.";
+
+			function showToast(msg) {
+				toast.textContent = msg || toastDefault;
+				toast.classList.add("show");
+				clearTimeout(showToast._t);
+				showToast._t = setTimeout(function () { toast.classList.remove("show"); }, 4000);
+			}
+
+			async function copyHtml() {
+				if (!validate()) {
+					render();
+					return;
+				}
+				var html = buildSignatureHtml();
+				rawHtml.value = html;
+
+				try {
+					if (navigator.clipboard && window.ClipboardItem) {
+						var plain = new Blob([html], { type: "text/plain" });
+						var rich = new Blob([html], { type: "text/html" });
+						await navigator.clipboard.write([
+							new ClipboardItem({
+								"text/html": rich,
+								"text/plain": plain
+							})
+						]);
+					} else {
+						await navigator.clipboard.writeText(html);
+					}
+					showToast(toastDefault);
+				} catch (e) {
+					rawPanel.style.display = "block";
+					rawHtml.value = html;
+					rawHtml.focus();
+					rawHtml.select();
+					showToast("Copy from the raw HTML box below (selected for you).");
+				}
+			}
+
+			["input", "change"].forEach(function (ev) {
+				fullName.addEventListener(ev, render);
+				jobTitle.addEventListener(ev, render);
+				email.addEventListener(ev, render);
+				phone.addEventListener(ev, render);
+				bookingUrl.addEventListener(ev, render);
+			});
+
+			btnCopy.addEventListener("click", copyHtml);
+			btnRaw.addEventListener("click", function () {
+				if (!validate()) return;
+				rawPanel.style.display = rawPanel.style.display === "none" ? "block" : "none";
+				rawHtml.value = buildSignatureHtml();
+				if (rawPanel.style.display === "block") {
+					rawHtml.focus();
+					rawHtml.select();
+				}
+			});
+
+			render();
+		})();
+	</script>
+</body>
+</html>
