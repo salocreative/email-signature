@@ -161,6 +161,20 @@
 			display: none;
 		}
 		.err.show { display: block; }
+		label.check {
+			display: flex;
+			align-items: flex-start;
+			gap: 0.5rem;
+			font-size: 0.9rem;
+			font-weight: 500;
+			margin-bottom: 1rem;
+			cursor: pointer;
+		}
+		label.check input {
+			margin-top: 0.2rem;
+			flex-shrink: 0;
+			accent-color: var(--accent);
+		}
 	</style>
 </head>
 <body>
@@ -187,9 +201,14 @@
 				<input type="text" id="phone" autocomplete="tel" placeholder="07700 900000">
 				<p class="hint">Leave blank to hide the mobile row.</p>
 
+				<label class="check" for="includeTestimonials">
+					<input type="checkbox" id="includeTestimonials" checked>
+					<span>Include &ldquo;What our clients say about us&rdquo; (links to Vimeo testimonials)</span>
+				</label>
+
 				<label for="bookingUrl">Book a chat link <span class="opt">(optional)</span></label>
 				<input type="url" id="bookingUrl" placeholder="https://cal.com/yourname/chat">
-				<p class="hint">Your Cal.com (or similar) URL. If blank, that row shows LinkedIn and Flexi Design only.</p>
+				<p class="hint">Your Cal.com (or similar) URL. If blank, the booking link is omitted from the row.</p>
 
 				<div class="actions">
 					<button type="button" class="btn-primary" id="btnCopy">Copy HTML for Gmail</button>
@@ -227,12 +246,14 @@
 			var LOGO_SRC = "https://ci3.googleusercontent.com/mail-sig/AIorK4zDxG7i4NWFhjHh-qropU2VKmFoyPY-u1b5iCfYwQ3vqm9hsCuOeUZtzIMaaM2BwLHf_FbKu3U";
 			var LOGO_W = 96;
 			var LOGO_H = 28;
+			var TESTIMONIALS_URL = "https://vimeo.com/salocreative/testimonials?share=copy&fl=sv&fe=ci";
 
 			var fullName = document.getElementById("fullName");
 			var jobTitle = document.getElementById("jobTitle");
 			var email = document.getElementById("email");
 			var phone = document.getElementById("phone");
 			var bookingUrl = document.getElementById("bookingUrl");
+			var includeTestimonials = document.getElementById("includeTestimonials");
 			var preview = document.getElementById("preview");
 			var btnCopy = document.getElementById("btnCopy");
 			var btnRaw = document.getElementById("btnRaw");
@@ -263,6 +284,7 @@
 				var em = email.value.trim();
 				var ph = phone.value.trim();
 				var book = bookingUrl.value.trim();
+				var showTestimonials = includeTestimonials.checked;
 
 				var rows = [];
 				rows.push("<tr><td><b>" + escapeHtml(name) + "</b></td></tr>");
@@ -295,13 +317,21 @@
 					"</table></td></tr>"
 				);
 
-				var footerLinks =
-					'<a href="https://www.linkedin.com/company/salo-creative/" target="_blank" style="color: #6405FF; text-decoration: none;">LinkedIn</a>&nbsp;|&nbsp;' +
-					'<a href="https://salo.uk/services/flexi-design/" target="_blank" style="color: #6405FF; text-decoration: none;">Flexi Design</a>';
-				if (book) {
-					footerLinks += '&nbsp;|&nbsp;<a href="' + escapeHtml(book) + '" target="_blank" style="color: #6405FF; text-decoration: none;">Book a quick chat</a>';
+				var footerParts = [
+					'<a href="https://www.linkedin.com/company/salo-creative/" target="_blank" style="color: #6405FF; text-decoration: none;">LinkedIn</a>',
+					'<a href="https://salo.uk/services/flexi-design/" target="_blank" style="color: #6405FF; text-decoration: none;">Flexi Design</a>'
+				];
+				if (showTestimonials) {
+					footerParts.push(
+						'<a href="' + escapeHtml(TESTIMONIALS_URL) + '" target="_blank" style="color: #6405FF; text-decoration: none;">What our clients say about us</a>'
+					);
 				}
-				rows.push('<tr><td style="padding-bottom:15px;">' + footerLinks + "</td></tr>");
+				if (book) {
+					footerParts.push(
+						'<a href="' + escapeHtml(book) + '" target="_blank" style="color: #6405FF; text-decoration: none;">Book a quick chat</a>'
+					);
+				}
+				rows.push('<tr><td style="padding-bottom:15px;">' + footerParts.join("&nbsp;|&nbsp;") + "</td></tr>");
 
 				rows.push(
 					'<tr><td style="color: rgb(102, 102, 102); font-size: 9px;">' +
@@ -387,6 +417,7 @@
 				email.addEventListener(ev, render);
 				phone.addEventListener(ev, render);
 				bookingUrl.addEventListener(ev, render);
+				includeTestimonials.addEventListener(ev, render);
 			});
 
 			btnCopy.addEventListener("click", copyHtml);
